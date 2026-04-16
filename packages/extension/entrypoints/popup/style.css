@@ -1,0 +1,68 @@
+@reference "tailwindcss";
+/* Contenedor principal */
+.popup-container {
+  @apply w-[380px] bg-white shadow-2xl rounded-xl overflow-hidden border border-gray-200 relative flex flex-col;
+}
+
+/* Header de Kueski */
+.kueski-header {
+  @apply bg-gradient-to-br from-purple-800 to-indigo-950 p-5 text-white;
+}
+
+.kueski-header-top {
+  @apply flex justify-between items-start mb-2;
+}
+
+.badge-exclusive {
+  @apply bg-[#00E59B] text-purple-950 font-bold border-none hover:bg-[#00E59B] text-[10px] tracking-wide px-2 py-0.5;
+}
+
+.kueski-amount-container {
+  @apply flex items-baseline gap-1 mt-0.5;
+}
+
+/* Navegación (Tabs) */
+.tabs-container {
+  @apply flex w-full rounded-none bg-gray-100 p-0 h-11 border-b border-gray-200;
+}
+
+.tab-button {
+  @apply flex-1 text-[11px] font-bold text-gray-500 rounded-none h-full 
+         data-[state=active]:bg-white data-[state=active]:text-purple-700 
+         data-[state=active]:shadow-[inset_0_-2px_0_0_#7e22ce] data-[state=active]:shadow-purple-600;
+}
+
+/* Tarjetas de Opciones (PAGOS) */
+.option-card-default {
+  @apply p-4 transition-all shadow-sm border border-gray-200;
+}
+
+.option-card-featured {
+  @apply p-4 transition-all shadow-sm border-purple-500 border-2 bg-purple-50/30;
+}
+
+.benefit-badge {
+  @apply bg-green-100 text-green-800 text-[9px] h-4 px-1.5 font-bold border-none;
+}
+
+.pay-button {
+  @apply bg-purple-600 hover:bg-purple-700 text-white font-bold px-5 h-9 rounded-md;
+}
+
+/* Comparativa de Precios (PRECIOS) */
+.price-row {
+  @apply flex items-center justify-between p-3.5 bg-gray-50 rounded-lg border border-gray-200;
+}
+
+.store-icon-container {
+  @apply bg-white p-2 border border-gray-200 rounded-md;
+}
+
+/* Footer Info */
+.footer-info {
+  @apply bg-gray-50 p-3.5 flex gap-3 items-start border-t border-gray-200 mt-auto;
+}
+
+.popup-container {
+  @apply w-[380px] bg-white shadow-2xl rounded-xl overflow-hidden border border-gray-200 relative flex flex-col;
+}
