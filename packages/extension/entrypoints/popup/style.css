@@ -1,68 +1,74 @@
-@reference "tailwindcss";
+@import "tailwindcss";
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
 /* Contenedor principal */
 .popup-container {
-  @apply w-[380px] bg-white shadow-2xl rounded-xl overflow-hidden border border-gray-200 relative flex flex-col;
+  @apply w-[380px] h-[600px] bg-white rounded-xl overflow-hidden shadow-[0_0_20px_rgba(0,0,0,0.1)] relative flex flex-col font-sans border border-gray-200;
 }
 
 /* Header de Kueski */
 .kueski-header {
-  @apply bg-gradient-to-br from-purple-800 to-indigo-950 p-5 text-white;
+  @apply bg-gradient-to-br from-[#9333ea] to-[#3b82f6] p-4 shrink-0;
 }
 
-.kueski-header-top {
-  @apply flex justify-between items-start mb-2;
-}
-
-.badge-exclusive {
-  @apply bg-[#00E59B] text-purple-950 font-bold border-none hover:bg-[#00E59B] text-[10px] tracking-wide px-2 py-0.5;
-}
-
-.kueski-amount-container {
-  @apply flex items-baseline gap-1 mt-0.5;
+.kueski-header-card {
+  @apply bg-white/20 backdrop-blur-sm rounded-lg p-3 border border-white/10;
 }
 
 /* Navegación (Tabs) */
 .tabs-container {
-  @apply flex w-full rounded-none bg-gray-100 p-0 h-11 border-b border-gray-200;
+  @apply w-full rounded-none bg-white p-0 h-12 border-b border-gray-200 shrink-0 grid grid-cols-3;
 }
 
 .tab-button {
-  @apply flex-1 text-[11px] font-bold text-gray-500 rounded-none h-full 
-         data-[state=active]:bg-white data-[state=active]:text-purple-700 
-         data-[state=active]:shadow-[inset_0_-2px_0_0_#7e22ce] data-[state=active]:shadow-purple-600;
+  @apply flex items-center justify-center gap-2 text-sm font-medium text-gray-600 rounded-none h-full bg-white transition-colors
+         data-[state=active]:bg-gray-50 data-[state=active]:text-gray-900
+         data-[state=active]:border-b-2 data-[state=active]:border-gray-900 cursor-pointer;
 }
 
 /* Tarjetas de Opciones (PAGOS) */
 .option-card-default {
-  @apply p-4 transition-all shadow-sm border border-gray-200;
+  @apply transition-all shadow-sm border border-gray-200 rounded-xl overflow-hidden bg-white;
 }
 
 .option-card-featured {
-  @apply p-4 transition-all shadow-sm border-purple-500 border-2 bg-purple-50/30;
+  @apply p-4 transition-all shadow-sm border-[#a855f7] border rounded-xl bg-white relative;
 }
 
 .benefit-badge {
   @apply bg-green-100 text-green-800 text-[9px] h-4 px-1.5 font-bold border-none;
 }
 
-.pay-button {
-  @apply bg-purple-600 hover:bg-purple-700 text-white font-bold px-5 h-9 rounded-md;
-}
-
 /* Comparativa de Precios (PRECIOS) */
 .price-row {
-  @apply flex items-center justify-between p-3.5 bg-gray-50 rounded-lg border border-gray-200;
+  @apply flex items-center justify-between p-3.5 bg-white rounded-lg border border-gray-200 shadow-sm;
 }
 
 .store-icon-container {
-  @apply bg-white p-2 border border-gray-200 rounded-md;
+  @apply bg-gray-50 p-2 border border-gray-100 rounded-md;
 }
 
 /* Footer Info */
 .footer-info {
-  @apply bg-gray-50 p-3.5 flex gap-3 items-start border-t border-gray-200 mt-auto;
+  @apply bg-gray-50 border-t border-gray-200 mt-auto shrink-0 py-2.5;
 }
 
-.popup-container {
-  @apply w-[380px] bg-white shadow-2xl rounded-xl overflow-hidden border border-gray-200 relative flex flex-col;
+.styled-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.styled-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.styled-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
 }
