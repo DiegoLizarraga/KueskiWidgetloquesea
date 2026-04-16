@@ -40,16 +40,17 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
   const [activeTab, setActiveTab] = useState<Tab>('pago');
 
   const kueskiOptions: PaymentOption[] = [
-    { provider: 'Kueski Pay', periods: 4, amount: 62.50, total: 250.00, featured: true, recommended: true, interest: '0% interés', benefits: ['Aprobación inmediata', 'Sin tarjeta de crédito', '100% digital'] },
-    { provider: 'Kueski Pay', periods: 6, amount: 41.67, total: 250.00, featured: false, recommended: false, interest: '0% interés', benefits: [] },
-    { provider: 'Kueski Pay', periods: 8, amount: 31.25, total: 250.00, featured: false, recommended: false, interest: '0% interés', benefits: [] },
-    { provider: 'Tarjeta de Crédito', periods: 1, amount: 250.00, total: 250.00, featured: false, recommended: false, interest: null, benefits: [] },
-    { provider: 'PayPal', periods: 1, amount: 250.00, total: 250.00, featured: false, recommended: false, interest: null, benefits: [] },
+    { provider: 'Kueski Pay', periods: 4, amount: 1500.00, total: 6000.00, featured: true, recommended: true, interest: '0% interés', benefits: ['Aprobación inmediata', 'Sin tarjeta de crédito', '100% digital'] },
+    { provider: 'Kueski Pay', periods: 6, amount: 1000.00, total: 6000.00, featured: false, recommended: false, interest: '0% interés', benefits: [] },
+    { provider: 'Kueski Pay', periods: 8, amount: 750.00, total: 6000.00, featured: false, recommended: false, interest: '0% interés', benefits: [] },
+    { provider: 'Tarjeta de Crédito', periods: 1, amount: 6000.00, total: 6000.00, featured: false, recommended: false, interest: null, benefits: [] },
+    { provider: 'PayPal', periods: 1, amount: 6000.00, total: 6000.00, featured: false, recommended: false, interest: null, benefits: [] },
   ];
 
   const priceComparisons: PriceComparison[] = [
-    { store: 'Amazon', price: 199.99, shipping: 'Free', cashback: '$4.99', status: 'In Stock', link: '#' },
-    { store: 'Best Buy', price: 219.99, shipping: 'Free', cashback: '$6.59', status: 'In Stock', link: '#' },
+    { store: 'Amazon', price: 6000.00, shipping: 'Free', cashback: '$4.99', status: 'In Stock', link: '#' },
+    { store: 'Best Buy', price: 6200.00, shipping: 'Free', cashback: '$6.59', status: 'In Stock', link: '#' },
+    { store: 'Walmart', price: 5950.00, shipping: '$5.99', cashback: '$3.80', status: 'In Stock', link: '#' },
   ];
 
   const coupons: Coupon[] = [
@@ -87,7 +88,7 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
           </div>
           <div className="flex justify-between items-center">
             <div className="flex flex-col">
-              <span className="text-3xl font-extrabold text-white leading-none mb-1">$62.50</span>
+              <span className="text-3xl font-extrabold text-white leading-none mb-1">$1,500</span>
               <span className="text-[11px] text-white/90">por quincena</span>
             </div>
             <div className="flex flex-col items-center">
@@ -141,10 +142,10 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
                     <div className="text-sm text-gray-600 mb-4">{opt.periods} quincenas</div>
                     <div className="bg-gray-50 rounded-xl p-4 mb-4 flex flex-col justify-center border border-gray-100">
                       <div className="flex items-baseline gap-1">
-                        <span className="text-3xl font-extrabold text-[#8b5cf6]">${opt.amount.toFixed(2)}</span>
+                        <span className="text-3xl font-extrabold text-[#8b5cf6]">${opt.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                         <span className="text-gray-500 text-sm font-medium">/ quincena</span>
                       </div>
-                      <div className="text-sm text-gray-600 mt-1">Total: ${opt.total.toFixed(2)}</div>
+                      <div className="text-sm text-gray-600 mt-1">Total: ${opt.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</div>
                     </div>
                     <div className="space-y-2 mb-4">
                       {opt.benefits.map((b, j) => (
@@ -165,11 +166,11 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
                       <span className="text-xs text-gray-500">
                         {opt.interest
                           ? `${opt.periods} quincenas · ${opt.interest}`
-                          : `1 pago de $${opt.total.toFixed(2)}`}
+                          : `1 pago de $${opt.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                       </span>
                     </div>
                     <span className="font-bold text-gray-800">
-                      {opt.interest ? `$${opt.amount.toFixed(2)}` : `$${opt.total.toFixed(2)}`}
+                      {opt.interest ? `$${opt.amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : `$${opt.total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
                     </span>
                   </div>
                 )}
@@ -204,7 +205,7 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
                 <div className="grid grid-cols-4 gap-2">
                   <div className="flex flex-col">
                     <span className="text-[11px] text-gray-500 font-medium">Precio</span>
-                    <span className="font-bold text-gray-900 text-[15px]">${item.price.toFixed(2)}</span>
+                    <span className="font-bold text-gray-900 text-[15px]">${item.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[11px] text-gray-500 font-medium">Envío</span>
