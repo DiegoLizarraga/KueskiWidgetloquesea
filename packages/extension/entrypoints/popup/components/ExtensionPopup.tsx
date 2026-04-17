@@ -1,14 +1,14 @@
 import { useState } from "react";
 import kueskiLogo from '../../../assets/kueski-logo.png';
 import {
-  Zap, X, Store, ExternalLink, TrendingDown, Check, Tag, LayoutTemplate, Copy, Info
+  Zap, X, Store, ExternalLink, TrendingDown, Check, Tag, LayoutTemplate, Copy, Info, Wallet, Bell
 } from "lucide-react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import '../style.css';
 
-type Tab = 'pago' | 'precios' | 'cupones';
+type Tab = 'panel' | 'pago' | 'precios' | 'cupones';
 
 interface PaymentOption {
   provider: string;
@@ -83,6 +83,7 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
   ];
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
+    { id: 'panel', label: 'Panel', icon: <Wallet className="h-4 w-4" /> },
     { id: 'pago', label: 'Pago', icon: <LayoutTemplate className="h-4 w-4" /> },
     { id: 'precios', label: 'Precios', icon: <TrendingDown className="h-4 w-4" /> },
     { id: 'cupones', label: 'Cupones', icon: <Tag className="h-4 w-4" /> },
@@ -126,7 +127,7 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
       </div>
 
       {/* TABS */}
-      <div className="tabs-container grid grid-cols-3">
+      <div className="tabs-container">
         {tabs.map(tab => (
           <button
             key={tab.id}
@@ -141,6 +142,50 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
 
       {/* CONTENT */}
       <div className="overflow-y-auto flex-1 bg-white p-4 styled-scrollbar">
+
+        {/* TAB: PANEL */}
+        {activeTab === 'panel' && (
+          <div className="space-y-4">
+            <Card className="p-4 rounded-xl border border-gray-200 shadow-sm bg-gradient-to-br from-gray-900 to-gray-800 text-white relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10">
+                <Wallet className="h-24 w-24" />
+              </div>
+              <h3 className="text-sm font-medium text-gray-300 mb-1 relative z-10">Panel de Control de Deuda</h3>
+              <div className="text-3xl font-extrabold mb-4 relative z-10">{formatCurrency(1250.50)}</div>
+
+              <div className="grid grid-cols-2 gap-4 border-t border-gray-700 pt-4 relative z-10">
+                <div>
+                  <div className="text-xs text-gray-400 mb-1">Crédito Disponible</div>
+                  <div className="text-lg font-bold text-[#00E59B]">{formatCurrency(8749.50)}</div>
+                </div>
+                <div>
+                  <div className="text-xs text-gray-400 mb-1">Límite Total</div>
+                  <div className="text-lg font-bold">{formatCurrency(10000.00)}</div>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-4 rounded-xl border-l-4 border-l-yellow-400 border-y border-r border-gray-200 shadow-sm bg-white">
+              <div className="flex gap-3 mb-3">
+                <div className="bg-yellow-100 p-2 rounded-full h-fit">
+                  <Bell className="h-5 w-5 text-yellow-600" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-gray-900 text-sm">Recordatorio de Cobro</h4>
+                  <p className="text-xs text-gray-600 mt-1">
+                    Tu próximo pago de {formatCurrency(250.00)} vence en 48 horas.
+                  </p>
+                </div>
+              </div>
+              <Button
+                onClick={() => { setActiveTab('pago'); setMockValidationState('idle'); }}
+                className="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold h-10 text-sm gap-2 rounded-lg"
+              >
+                Realizar Pago
+              </Button>
+            </Card>
+          </div>
+        )}
 
         {/* TAB: PAGO */}
         {activeTab === 'pago' && mockValidationState === 'idle' && (
