@@ -19,7 +19,18 @@ interface PaymentOption {
   recommended: boolean;
   interest: string | null;
   benefits: string[];
+  commission?: string;
+  firstPaymentDate?: string;
 }
+
+const formatCurrency = (amount: number) => {
+  return amount.toLocaleString('es-MX', {
+    style: 'currency',
+    currency: 'MXN',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+};
 
 interface PriceComparison {
   store: string;
@@ -39,11 +50,23 @@ interface Coupon {
 
 export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
   const [activeTab, setActiveTab] = useState<Tab>('pago');
+  const [mockValidationState, setMockValidationState] = useState<'idle' | 'form' | 'loading' | 'success'>('idle');
+
+  const handlePayClick = () => {
+    setMockValidationState('form');
+  };
+
+  const handleVerifyIdentity = () => {
+    setMockValidationState('loading');
+    setTimeout(() => {
+      setMockValidationState('success');
+    }, 2000);
+  };
 
   const kueskiOptions: PaymentOption[] = [
-    { provider: 'Kueski Pay', periods: 4, amount: 62.50, total: 250.00, featured: true, recommended: true, interest: '0% interés', benefits: ['Aprobación inmediata', 'Sin tarjeta de crédito', '100% digital'] },
-    { provider: 'Kueski Pay', periods: 6, amount: 41.67, total: 250.00, featured: false, recommended: false, interest: '0% interés', benefits: [] },
-    { provider: 'Kueski Pay', periods: 8, amount: 31.25, total: 250.00, featured: false, recommended: false, interest: '0% interés', benefits: [] },
+    { provider: 'Kueski Pay', periods: 4, amount: 62.50, total: 250.00, featured: true, recommended: true, interest: '0% interés', benefits: ['Aprobación inmediata', 'Sin tarjeta de crédito', '100% digital'], commission: '0 comisiones ocultas', firstPaymentDate: 'Hoy' },
+    { provider: 'Kueski Pay', periods: 6, amount: 41.67, total: 250.00, featured: false, recommended: false, interest: '0% interés', benefits: [], commission: '0 comisiones ocultas', firstPaymentDate: 'Hoy' },
+    { provider: 'Kueski Pay', periods: 8, amount: 31.25, total: 250.00, featured: false, recommended: false, interest: '0% interés', benefits: [], commission: '0 comisiones ocultas', firstPaymentDate: 'Hoy' },
     { provider: 'Tarjeta de Crédito', periods: 1, amount: 250.00, total: 250.00, featured: false, recommended: false, interest: null, benefits: [] },
     { provider: 'PayPal', periods: 1, amount: 250.00, total: 250.00, featured: false, recommended: false, interest: null, benefits: [] },
   ];
@@ -88,7 +111,7 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
           </div>
           <div className="flex justify-between items-center">
             <div className="flex flex-col">
-              <span className="text-3xl font-extrabold text-white leading-none mb-1">$62.50</span>
+              <span className="text-3xl font-extrabold text-white leading-none mb-1">{formatCurrency(62.50)}</span>
               <span className="text-[11px] text-white/90">por quincena</span>
             </div>
             <div className="flex flex-col items-center">
@@ -120,7 +143,7 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
       <div className="overflow-y-auto flex-1 bg-white p-4 styled-scrollbar">
 
         {/* TAB: PAGO */}
-        {activeTab === 'pago' && (
+        {activeTab === 'pago' && mockValidationState === 'idle' && (
           <div className="flex flex-col gap-4">
             {kueskiOptions.map((opt, i) => (
               <Card key={i} className={opt.featured ? "option-card-featured" : "option-card-default"}>
@@ -142,10 +165,16 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
                     <div className="text-sm text-gray-600 mb-4">{opt.periods} quincenas</div>
                     <div className="bg-gray-50 rounded-xl p-4 mb-4 flex flex-col justify-center border border-gray-100">
                       <div className="flex items-baseline gap-1">
-                        <span className="text-3xl font-extrabold text-[#4def6a]">${opt.amount.toFixed(2)}</span>
+                        <span className="text-3xl font-extrabold text-[#4def6a]">{formatCurrency(opt.amount)}</span>
                         <span className="text-gray-500 text-sm font-medium">/ quincena</span>
                       </div>
-                      <div className="text-sm text-gray-600 mt-1">Total: ${opt.total.toFixed(2)}</div>
+                      <div className="text-sm text-gray-600 mt-1">Total: {formatCurrency(opt.total)}</div>
+                      {opt.commission && (
+                        <div className="text-xs text-gray-500 mt-1">{opt.commission}</div>
+                      )}
+                      {opt.firstPaymentDate && (
+                        <div className="text-xs font-bold text-gray-700 mt-1">Primer cobro: {opt.firstPaymentDate}</div>
+                      )}
                     </div>
                     <div className="space-y-2 mb-4">
                       {opt.benefits.map((b, j) => (
@@ -155,7 +184,7 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
                         </div>
                       ))}
                     </div>
-                    <Button className="w-full bg-[#0075FF] hover:bg-[#0050CC] text-white font-bold h-12 text-base gap-2 rounded-lg">
+                    <Button onClick={handlePayClick} className="w-full bg-[#0075FF] hover:bg-[#0050CC] text-white font-bold h-12 text-base gap-2 rounded-lg">
                       <Zap className="h-5 w-5" /> Pagar con Kueski Pay
                     </Button>
                   </>
@@ -166,11 +195,17 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
                       <span className="text-xs text-gray-500">
                         {opt.interest
                           ? `${opt.periods} quincenas · ${opt.interest}`
-                          : `1 pago de $${opt.total.toFixed(2)}`}
+                          : `1 pago de ${formatCurrency(opt.total)}`}
                       </span>
+                      {opt.commission && (
+                        <span className="text-[10px] text-gray-400">{opt.commission}</span>
+                      )}
+                      {opt.firstPaymentDate && (
+                        <span className="text-[10px] text-gray-500 font-medium mt-0.5">Primer cobro: {opt.firstPaymentDate}</span>
+                      )}
                     </div>
                     <span className="font-bold text-gray-800">
-                      {opt.interest ? `$${opt.amount.toFixed(2)}` : `$${opt.total.toFixed(2)}`}
+                      {opt.interest ? formatCurrency(opt.amount) : formatCurrency(opt.total)}
                     </span>
                   </div>
                 )}
@@ -186,6 +221,47 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
                 Eliges el plazo que mejor se adapte a ti. ¡Sin necesidad de tarjeta de crédito!
               </p>
             </div>
+          </div>
+        )}
+
+        {/* VALIDATION FLOW */}
+        {activeTab === 'pago' && mockValidationState !== 'idle' && (
+          <div className="flex flex-col gap-4 p-2 items-center justify-center text-center">
+            {mockValidationState === 'form' && (
+              <>
+                <h3 className="font-bold text-lg mb-2">Validación de Identidad</h3>
+                <p className="text-sm text-gray-500 mb-4">Completa tu registro con pocos datos para aprobar tu compra.</p>
+                <input className="w-full border rounded-md p-2 mb-2" placeholder="Nombre completo" />
+                <input className="w-full border rounded-md p-2 mb-2" placeholder="Email" />
+                <div className="w-full border rounded-md p-6 bg-gray-50 border-dashed text-gray-400 text-sm mb-4 cursor-pointer">
+                  📸 Toma foto de tu ID y selfie
+                </div>
+                <Button onClick={handleVerifyIdentity} className="w-full bg-[#0075FF] hover:bg-[#0050CC] text-white">
+                  Verificar Identidad
+                </Button>
+                <Button variant="ghost" onClick={() => setMockValidationState('idle')} className="w-full mt-2 text-gray-500">
+                  Cancelar
+                </Button>
+              </>
+            )}
+            {mockValidationState === 'loading' && (
+              <div className="py-10 flex flex-col items-center">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#0075FF] mb-4"></div>
+                <p className="font-medium text-gray-600">Verificando identidad...</p>
+              </div>
+            )}
+            {mockValidationState === 'success' && (
+              <div className="py-10 flex flex-col items-center">
+                <div className="bg-[#00E59B]/20 p-4 rounded-full mb-4">
+                  <Check className="h-10 w-10 text-[#00E59B]" />
+                </div>
+                <h3 className="font-bold text-lg text-gray-900 mb-1">Identidad Verificada</h3>
+                <p className="text-sm text-gray-500 mb-6">Tu compra ha sido aprobada con Kueski Pay.</p>
+                <Button onClick={() => setMockValidationState('idle')} className="w-full bg-gray-900 text-white">
+                  Volver al inicio
+                </Button>
+              </div>
+            )}
           </div>
         )}
 
@@ -205,7 +281,7 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
                 <div className="grid grid-cols-4 gap-2">
                   <div className="flex flex-col">
                     <span className="text-[11px] text-gray-500 font-medium">Precio</span>
-                    <span className="font-bold text-gray-900 text-[15px]">${item.price.toFixed(2)}</span>
+                    <span className="font-bold text-gray-900 text-[15px]">{formatCurrency(item.price)}</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[11px] text-gray-500 font-medium">Envío</span>
