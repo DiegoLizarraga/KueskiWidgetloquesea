@@ -1,15 +1,25 @@
 import { useState } from "react";
+import kueskiLogo from '../../../assets/kueski-logo.png';
 import {
-  Zap, X, Store, ExternalLink, TrendingDown, Check, Tag, LayoutTemplate, Copy, Star, Info, Wallet
+  Zap, X, Store, ExternalLink, TrendingDown, Check, Tag, LayoutTemplate, Copy, Info
 } from "lucide-react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
-import { SimuladorPago } from "./SimuladorPago";
-import { DebtDashboard } from "./DebtDashboard";
 import '../style.css';
 
-type Tab = 'pago' | 'precios' | 'cupones' | 'deuda';
+type Tab = 'pago' | 'precios' | 'cupones';
+
+interface PaymentOption {
+  provider: string;
+  periods: number;
+  amount: number;
+  total: number;
+  featured: boolean;
+  recommended: boolean;
+  interest: string | null;
+  benefits: string[];
+}
 
 interface PriceComparison {
   store: string;
@@ -30,10 +40,17 @@ interface Coupon {
 export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
   const [activeTab, setActiveTab] = useState<Tab>('pago');
 
+  const kueskiOptions: PaymentOption[] = [
+    { provider: 'Kueski Pay', periods: 4, amount: 62.50, total: 250.00, featured: true, recommended: true, interest: '0% interés', benefits: ['Aprobación inmediata', 'Sin tarjeta de crédito', '100% digital'] },
+    { provider: 'Kueski Pay', periods: 6, amount: 41.67, total: 250.00, featured: false, recommended: false, interest: '0% interés', benefits: [] },
+    { provider: 'Kueski Pay', periods: 8, amount: 31.25, total: 250.00, featured: false, recommended: false, interest: '0% interés', benefits: [] },
+    { provider: 'Tarjeta de Crédito', periods: 1, amount: 250.00, total: 250.00, featured: false, recommended: false, interest: null, benefits: [] },
+    { provider: 'PayPal', periods: 1, amount: 250.00, total: 250.00, featured: false, recommended: false, interest: null, benefits: [] },
+  ];
+
   const priceComparisons: PriceComparison[] = [
-    { store: 'Amazon', price: 6000.00, shipping: 'Free', cashback: '$4.99', status: 'In Stock', link: '#' },
-    { store: 'Best Buy', price: 6200.00, shipping: 'Free', cashback: '$6.59', status: 'In Stock', link: '#' },
-    { store: 'Walmart', price: 5950.00, shipping: '$5.99', cashback: '$3.80', status: 'In Stock', link: '#' },
+    { store: 'Amazon', price: 199.99, shipping: 'Free', cashback: '$4.99', status: 'In Stock', link: '#' },
+    { store: 'Best Buy', price: 219.99, shipping: 'Free', cashback: '$6.59', status: 'In Stock', link: '#' },
   ];
 
   const coupons: Coupon[] = [
@@ -46,7 +63,6 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
     { id: 'pago', label: 'Pago', icon: <LayoutTemplate className="h-4 w-4" /> },
     { id: 'precios', label: 'Precios', icon: <TrendingDown className="h-4 w-4" /> },
     { id: 'cupones', label: 'Cupones', icon: <Tag className="h-4 w-4" /> },
-    { id: 'deuda', label: 'Deuda', icon: <Wallet className="h-4 w-4" /> },
   ];
 
   return (
@@ -55,8 +71,8 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
       <div className="kueski-header">
         <div className="flex justify-between items-center mb-4">
           <div className="flex items-center gap-1.5 text-white font-bold text-lg tracking-wide">
-            <Star className="h-5 w-5 fill-white" />
-            <span>DealFinder</span>
+            <img src={kueskiLogo} className="h-5 w-5" alt="Kueski" />
+            <span>Kueski-Widget</span>
           </div>
           <Button
             variant="ghost" size="icon" onClick={onClose}
@@ -72,7 +88,7 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
           </div>
           <div className="flex justify-between items-center">
             <div className="flex flex-col">
-              <span className="text-3xl font-extrabold text-white leading-none mb-1">$1,500</span>
+              <span className="text-3xl font-extrabold text-white leading-none mb-1">$62.50</span>
               <span className="text-[11px] text-white/90">por quincena</span>
             </div>
             <div className="flex flex-col items-center">
@@ -87,7 +103,7 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
       </div>
 
       {/* TABS */}
-      <div className="tabs-container grid grid-cols-4">
+      <div className="tabs-container grid grid-cols-3">
         {tabs.map(tab => (
           <button
             key={tab.id}
@@ -105,7 +121,72 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
 
         {/* TAB: PAGO */}
         {activeTab === 'pago' && (
-          <SimuladorPago />
+          <div className="flex flex-col gap-4">
+            {kueskiOptions.map((opt, i) => (
+              <Card key={i} className={opt.featured ? "option-card-featured" : "option-card-default"}>
+                {opt.featured ? (
+                  <>
+                    <div className="flex items-center flex-wrap gap-2 mb-1">
+                      <span className="font-bold text-lg text-gray-900">{opt.provider}</span>
+                      {opt.recommended && (
+                        <Badge className="bg-[#0075FF] hover:bg-[#0075FF] text-white border-none gap-1 py-0.5">
+                          <Zap className="h-3 w-3 fill-white" /> Recomendado
+                        </Badge>
+                      )}
+                      {opt.interest && (
+                        <Badge className="bg-[#00E59B] hover:bg-[#00E59B] text-gray-900 border-none font-bold ml-auto">
+                          {opt.interest}
+                        </Badge>
+                      )}
+                    </div>
+                    <div className="text-sm text-gray-600 mb-4">{opt.periods} quincenas</div>
+                    <div className="bg-gray-50 rounded-xl p-4 mb-4 flex flex-col justify-center border border-gray-100">
+                      <div className="flex items-baseline gap-1">
+                        <span className="text-3xl font-extrabold text-[#4def6a]">${opt.amount.toFixed(2)}</span>
+                        <span className="text-gray-500 text-sm font-medium">/ quincena</span>
+                      </div>
+                      <div className="text-sm text-gray-600 mt-1">Total: ${opt.total.toFixed(2)}</div>
+                    </div>
+                    <div className="space-y-2 mb-4">
+                      {opt.benefits.map((b, j) => (
+                        <div key={j} className="flex items-center gap-2 text-sm text-gray-600">
+                          <Check className="h-4 w-4 text-[#00E59B] font-bold" />
+                          {b}
+                        </div>
+                      ))}
+                    </div>
+                    <Button className="w-full bg-[#0075FF] hover:bg-[#0050CC] text-white font-bold h-12 text-base gap-2 rounded-lg">
+                      <Zap className="h-5 w-5" /> Pagar con Kueski Pay
+                    </Button>
+                  </>
+                ) : (
+                  <div className="flex justify-between items-center p-3">
+                    <div className="flex flex-col">
+                      <span className="font-bold text-gray-800">{opt.provider}</span>
+                      <span className="text-xs text-gray-500">
+                        {opt.interest
+                          ? `${opt.periods} quincenas · ${opt.interest}`
+                          : `1 pago de $${opt.total.toFixed(2)}`}
+                      </span>
+                    </div>
+                    <span className="font-bold text-gray-800">
+                      {opt.interest ? `$${opt.amount.toFixed(2)}` : `$${opt.total.toFixed(2)}`}
+                    </span>
+                  </div>
+                )}
+              </Card>
+            ))}
+            <div className="mt-2 bg-[#2596be]/10 border border-[#2596be]/20 rounded-xl p-4 text-sm text-[#1a5f78]">
+              <div className="flex items-center gap-2 font-bold mb-1">
+                <Info className="h-4 w-4 text-[#2596be]" />
+                ¿Qué son los pagos quincenales?
+              </div>
+              <p className="text-[#1a5f78]/80 leading-relaxed text-xs">
+                Kueski Pay divide el total de tu compra en fracciones que pagas cada 15 días.
+                Eliges el plazo que mejor se adapte a ti. ¡Sin necesidad de tarjeta de crédito!
+              </p>
+            </div>
+          </div>
         )}
 
         {/* TAB: PRECIOS */}
@@ -124,7 +205,7 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
                 <div className="grid grid-cols-4 gap-2">
                   <div className="flex flex-col">
                     <span className="text-[11px] text-gray-500 font-medium">Precio</span>
-                    <span className="font-bold text-gray-900 text-[15px]">${item.price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                    <span className="font-bold text-gray-900 text-[15px]">${item.price.toFixed(2)}</span>
                   </div>
                   <div className="flex flex-col">
                     <span className="text-[11px] text-gray-500 font-medium">Envío</span>
@@ -170,17 +251,12 @@ export function ExtensionPopup({ onClose }: { onClose?: () => void }) {
             ))}
           </div>
         )}
-
-        {/* TAB: DEUDA */}
-        {activeTab === 'deuda' && (
-          <DebtDashboard />
-        )}
       </div>
 
       {/* FOOTER */}
       <div className="footer-info text-center justify-center">
         <span className="text-[11px] font-medium text-gray-500 flex items-center gap-1.5 justify-center">
-          <span>💡</span> Financiamiento disponible al momento de compra
+          Financiamiento disponible al momento de compra
         </span>
       </div>
     </div>
