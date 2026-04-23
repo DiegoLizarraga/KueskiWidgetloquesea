@@ -155,6 +155,18 @@ export const renderWidget = (merchant: Merchant, data: ExtractedData): HTMLEleme
   const closeBtn = el('button', { class: 'close-btn', text: '✕', attrs: { id: 'closePanel', type: 'button' } });
   header.appendChild(closeBtn);
   header.appendChild(el('h3', { text: '💳 Paga con Kueski Pay' }));
+
+  // Custom Promos / Merchant Name text
+  if (merchant.domain.includes('amazon')) {
+    header.appendChild(el('p', { class: 'subtitle', text: 'En Amazon' }));
+    header.appendChild(el('div', { html: '<div style="background:#fff; color:#0075FF; font-size:11px; padding:6px 10px; border-radius:6px; margin-bottom:8px; font-weight:bold; border: 1px dashed #0075FF;">🎉 10% extra con cupón KUESKI10</div>' }));
+  } else if (merchant.domain.includes('mercadolibre')) {
+    header.appendChild(el('p', { class: 'subtitle', text: 'En Mercado Libre' }));
+    header.appendChild(el('div', { html: '<div style="background:#fff; color:#0075FF; font-size:11px; padding:6px 10px; border-radius:6px; margin-bottom:8px; font-weight:bold; border: 1px dashed #0075FF;">🚀 Envío gratis + 5% OFF con MELIKUESKI</div>' }));
+  } else {
+    header.appendChild(el('p', { class: 'subtitle', text: `En ${merchant.name}` }));
+  }
+
   header.appendChild(el('p', { class: 'subtitle', text: productShort }));
   const priceBig = el('div', { class: 'price-big', text: fmt(options[0].amount) });
   const priceLabel = el('div', { class: 'price-label', text: 'por quincena · 4 quincenas · 0% interés' });
